@@ -1,0 +1,10 @@
+(
+  id = 17,
+  name = "Firstname Lastname",
+  email = "username@domain.com",
+  phones = [
+    (number = "123", type = work),
+    (number = "234", type = home)
+  ],
+  employment = (school = "of life")
+)

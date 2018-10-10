@@ -86,9 +86,29 @@ TESTS = capn-test
 CAPNP_SCHEMA_FILES := $(shell find . -type f -name \*.capnp)
 
 CAPNP ?= capnp
-.PHONY: capnp-compile
+.PHONY: capnp-compile fuzz-mem fuzz-fp
 capnp-compile:
 	$(CAPNP) compile \
 		--output=./capnpc-c \
 		-Icompiler \
 		$(CAPNP_SCHEMA_FILES)
+
+# fuzz
+AFLCC ?= afl-clang
+AFL-FUZZ ?= afl-fuzz
+
+fuzz/in/Person.bin: fuzz/Person.txt
+	$(CAPNP) encode tests/addressbook.capnp Person < $< > $@
+
+fuzz/read-mem: fuzz/read_mem.c tests/addressbook.capnp.c lib/capn-malloc.c lib/capn-stream.c lib/capn.c
+	AFL_USE_ASAN=1 $(AFLCC) $(CFLAGS) -Ilib -Itests -Icompiler  $^ -o $@
+
+fuzz/read-fp: fuzz/read_fp.c tests/addressbook.capnp.c lib/capn-malloc.c lib/capn-stream.c lib/capn.c
+	AFL_USE_ASAN=1 $(AFLCC) $(CFLAGS) -Ilib -Itests -Icompiler  $^ -o $@
+
+fuzz-mem: fuzz/read-mem fuzz/in/Person.bin
+	$(AFL-FUZZ) -i fuzz/in -o fuzz/out ./fuzz/read-mem @@
+
+fuzz-fp: fuzz/read-fp fuzz/in/Person.bin
+	$(AFL-FUZZ) -i fuzz/in -o fuzz/out ./fuzz/read-fp @@
+

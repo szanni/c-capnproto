@@ -30,3 +30,8 @@ capnpc-c
 c-capnproto.pc
 
 *.tar.gz
+
+fuzz/in
+fuzz/out
+fuzz/read-mem*
+fuzz/read-fp*
