@@ -84,6 +84,9 @@ The project [`quagga-capnproto`](https://github.com/opensourcerouting/quagga-cap
 * Serialization in function [`bgp_notify_send()`](https://github.com/opensourcerouting/quagga-capnproto/blob/27061648f3418fac0d217b16a46add534343e841/bgpd/bgp_zmq.c#L81-L96) in file `quagga-capnproto/bgpd/bgp_zmq.c`
 * Deserialization in function [`qzc_callback()`](https://github.com/opensourcerouting/quagga-capnproto/blob/27061648f3418fac0d217b16a46add534343e841/lib/qzc.c#L249-L257) in file `quagga-capnproto/lib/qzc.c`
 
+## Security
+The generated code assumes all input to be trusted. Do NOT use with untrusted input! There is currently no code in place to check if structures/pointers are within bounds.
+
 ## Status
 
 This is a merge of 3 forks of [James McKaskill's great
